@@ -1,0 +1,14 @@
+#PBS -N COLO829_LR_bgzip_tabix
+#PBS -r n
+#PBS -l ncpus=3,mem=10GB,walltime=48:00:00
+#PBS -m ae
+#PBS -M k.henry@dkfz-heidelberg.de
+
+cd /working/lab_nicw/kevinH/projects/dark_regions/
+
+module load samtools/1.9
+module load htslib/1.9
+module load tabix/0.2.6
+
+bgzip /working/lab_nicw/kevinH/projects/dark_regions/COLO829_LR.pileup
+tabix -b 2 -e 2 /working/lab_nicw/kevinH/projects/dark_regions/COLO829_LR.pileup.gz
