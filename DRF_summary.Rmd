@@ -1,0 +1,129 @@
+---
+title: "DRF_summary"
+author: "Kevin Brooks Henry"
+date: "5/26/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r Libraries, message=FALSE}
+library(ggplot2)
+library(dplyr)
+library(rtracklayer)
+library(DT)
+library(plotly)
+```
+
+```{r Loading DRs}
+dark.regions.df <- read.csv(file = 'COLO829_full_dark_regions.bed', sep = '\t', header = FALSE)
+```
+
+```{r Reformatting Data}
+names(dark.regions.df)[c(1, 2, 3, 4)] <- c('chromosome', 'start', 'end', 'dark_reason')
+
+dark.regions.df$dark_reason <- factor(x = dark.regions.df$dark_reason,
+                                      levels = c("{'depth', 'mapq', 'phred'}", "{'depth', 'phred', 'mapq'}", "{'mapq', 'depth', 'phred'}", "{'phred', 'depth', 'mapq'}", "{'phred', 'mapq', 'depth'}", "{'depth', 'mapq'}", "{'mapq', 'depth'}", "{'depth', 'phred'}", "{'phred', 'depth'}", "{'mapq', 'phred'}", "{'phred', 'mapq'}", "{'depth'}", "{'mapq'}", "{'phred'}"),
+                                      labels = c("{'depth', 'mapq', 'phred'}", "{'depth', 'mapq', 'phred'}", "{'depth', 'mapq', 'phred'}", "{'depth', 'mapq', 'phred'}", "{'depth', 'mapq', 'phred'}", "{'depth', 'mapq'}", "{'depth', 'mapq'}", "{'depth', 'phred'}", "{'depth', 'phred'}", "{'mapq', 'phred'}", "{'mapq', 'phred'}", "{'depth'}", "{'mapq'}", "{'phred'}"))
+
+dark.regions.df$dark_reason <- droplevels(dark.regions.df$dark_reason)
+
+#Adding width column
+dark.regions.df$width <- (dark.regions.df$end - dark.regions.df$start) + 1 
+
+```
+
+```{r Getting total coverage, message=FALSE}
+
+#Making a GRanges object
+dark.regions.gr <- makeGRangesFromDataFrame(dark.regions.df, 
+                                    keep.extra.columns = TRUE,
+                                    seqnames.field = 'chromosome',
+                                    start.field = 'start',
+                                    end.field = 'end')
+
+#Loading hg38 reference genome
+hg38 <- GRangesForBSGenome(genome = 'hg38', chrom = NULL, ranges = NULL)
+df.hg38 <- data.frame(hg38[c(1:24), ])
+hg38 <- makeGRangesFromDataFrame(df.hg38, 
+                                 keep.extra.columns = TRUE,
+                                 seqnames.field = 'seqnames',
+                                 start.field = 'start',
+                                 end.field = 'end')
+hg38length <- sum(width(hg38))
+
+dark.region.length <- sum(width(dark.regions.gr))
+
+dark.region.length / hg38length * 100
+```
+
+So it looks like the dark regions in total cover a little over 7% of the hg38 genome, seems in line with what others have found
+
+```{r Basic Summaries}
+#Getting the number of each dark reasons for each chromosome 
+sum_dark_reason <- group_by(dark.regions.df, dark.regions.df$dark_reason, chromosome) %>% dplyr::summarise(count = n())
+names(sum_dark_reason)[1] <- 'dark_reason'
+
+#Getting the biggest dark region for each chromosome <- this method is better than max because we can see the coordinates
+max <- dark.regions.df %>% group_by(chromosome) %>% top_n(n=1, width)
+
+#Getting summary statistics
+stats <- dark.regions.df %>% group_by(chromosome) %>% dplyr::summarize(mean = mean(width), sd = sd(width), max = max(width))
+```
+
+```{r Interactive tables from the above stats}
+DT::datatable(sum_dark_reason)
+DT::datatable(max)
+DT::datatable(stats)
+```
+
+
+Now looking at the distribution of dark region sizes in each chromosome
+
+```{r Plotting widths}
+ggplot(dark.regions.df, aes(x=chromosome, y=width, fill=chromosome)) + 
+  geom_violin() +
+  scale_y_continuous(trans='log10') +
+  theme(axis.title.x=element_blank(),
+        axis.text.x=element_blank(),
+        axis.ticks.x=element_blank())
+  
+```
+
+
+Bar plots with dark_reason
+
+```{r}
+
+p1 <- ggplot(sum_dark_reason, aes(fill=dark_reason, y=count, x=chromosome)) + 
+    geom_bar(position="dodge", stat="identity")
+
+#Making this one interactive with plotly
+
+ggplotly(p1)
+
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
