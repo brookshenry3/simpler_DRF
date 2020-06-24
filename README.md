@@ -27,7 +27,7 @@ A workflow with simpler_DRF could look like:
 
 short- or long-read BAM files > create .pileup file using samtools mpileup > bgzip and index .pileup file > run simpler_DRF.py > run exploratory analysis in DRF_summary.Rmd file. 
 
-
+"scripts" contains misc. bits of code related to the project, however it is mostly scratch work, and only simpler_DRF.py is needed to run the dark region finder
 
 
 Options:
