@@ -1,9 +1,24 @@
 # simpler_DRF
 A python script to find genomic dark regions in short- and long-read sequencing data
 
-simpler_DRF.py can be run from the command line, and is inteneded for use in a cluster/HPC environment. **Due to memory issues it is advisable to run simpler_DRF on a chromosome-by-chromosome basis.** simpler_DRF.py supports multithreading, however performance gains are marginal as only the first step of the program is multithreaded. Generally 3-5 threads/cores is enough. 
+simpler_DRF.py can be run from the command line, and is inteneded for use in a cluster/HPC environment. **Due to memory issues it is advisable to run simpler_DRF on a chromosome-by-chromosome basis.** simpler_DRF.py supports multithreading, however performance gains are marginal as only the first step of the program is multithreaded. Generally 3 threads/cores is enough. 
 
-As an input simpler_DRF.py takes a .pileup file that has been bgzipped and indexed, and will return 3 files: 
+As an input simpler_DRF.py takes the following:
+
+* a .pileup file that has been bgzipped and indexed
+* a reference genome fasta file
+* the sequencing method used:
+ * Use "short" for short-read methods such as Illumina HiSeq, etc.
+ * Use "long" for long-read methods such as ONT MinION/PromethION, etc.
+* filtering criteria:
+ * read depth (defaults to 10)
+ * PHRED score (defaults to 20)
+ * MAPQ (defaults to 10, do not include this option if sequencing method used is "long")
+* Location to write output file
+
+
+simpler_DRF will return 3 files: 
+
 * A TSV file containing the raw data (i.e. all positions that simpler_DRF identifies as 'dark' according to filtering criteria used)
 * A file in BED format listing the genomic coordinates that have been identified as dark, as well as an additional column containing the reason they were identified as dark
 * A txt file containing the total % dark regions for the given chromosome(s)
