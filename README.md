@@ -8,12 +8,12 @@ As an input simpler_DRF.py takes the following:
 * a .pileup file that has been bgzipped and indexed
 * a reference genome fasta file
 * the sequencing method used:
- * Use "short" for short-read methods such as Illumina HiSeq, etc.
- * Use "long" for long-read methods such as ONT MinION/PromethION, etc.
+  * Use "short" for short-read methods such as Illumina HiSeq, etc.
+  * Use "long" for long-read methods such as ONT MinION/PromethION, etc.
 * filtering criteria:
- * read depth (defaults to 10)
- * PHRED score (defaults to 20)
- * MAPQ (defaults to 10, do not include this option if sequencing method used is "long")
+  * read depth (defaults to 10)
+  * PHRED score (defaults to 20)
+  * MAPQ (defaults to 10, do not include this option if sequencing method used is "long")
 * Location to write output file
 
 
