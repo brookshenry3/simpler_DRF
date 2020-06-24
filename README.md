@@ -7,7 +7,7 @@ A python script to find genomic dark regions in short- and long-read sequencing 
 
 
 Options:
-
+{{{
 usage: simpler_DRF.py [-h] [-r REF] [-s METHOD] [-f INPUT] [-d DEPTH]
                       [-p PHRED] [-m MAP] [-o OUTPUT] [-x CHROM] [-t THREADS]
                       [-w WINDOW_SIZE]
@@ -47,3 +47,4 @@ Optional:
                         To use threading the genome is chunked into chunks of
                         window size. the bigger the better but more RAM needed
                         [1000000]
+ }}}
