@@ -25,8 +25,7 @@ def main ():
             '-r',
             '--ref',
             type=str,
-            help='ref 37 or 38 [38]',
-            default = '/reference/genomes/GRCh38_no_alt_analysis_set/indexes/BWAKIT_0.7.12/GCA_000001405.15_GRCh38_no_alt_analysis_set.fa')
+            help='ref genome')
 
     required.add_argument(
             '-s',
