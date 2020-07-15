@@ -19,7 +19,7 @@ def main ():
 
     required = parser.add_argument_group(
             'Required',
-            'ref, pileup, and output location')
+            'ref, method, pileup, and output location')
 
     required.add_argument(
             '-r',
